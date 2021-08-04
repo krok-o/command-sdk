@@ -2,23 +2,29 @@ package github
 
 import (
 	"encoding/json"
-	"fmt"
 )
+
+// Repository contains information about the repository. All we care about
+// here are the possible urls for identification.
+type Repository struct {
+	GitURL   string `json:"git_url"`
+	SSHURL   string `json:"ssh_url"`
+	HTMLURL  string `json:"html_url"`
+	FullName string `json:"full_name"`
+}
+
+// Payload contains information about the event like, user, commit id and so on.
+// All we care about for the sake of identification is the repository.
+type Payload struct {
+	Repo Repository `json:"repository"`
+}
 
 // ExtractRepoName gets the repo name from a payload.
 func ExtractRepoName(payload string) (string, error) {
-	m := make(map[string]interface{})
-	if err := json.Unmarshal([]byte(payload), &m); err != nil {
+	var p Payload
+	if err := json.Unmarshal([]byte(payload), &p); err != nil {
 		return "", err
 	}
-	repository, ok := m["repository"].(map[string]interface{})
-	if !ok {
-		return "", fmt.Errorf("repository was not found in payload")
-	}
-	fullName, ok := repository["full_name"].(string)
-	if !ok {
-		return "", fmt.Errorf("full_name was not found in repository: %v", repository)
-	}
 
-	return fullName, nil
+	return p.Repo.FullName, nil
 }
