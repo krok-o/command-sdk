@@ -11,7 +11,7 @@ type Repository struct {
 	SSHURL   string `json:"ssh_url"`
 	HTMLURL  string `json:"html_url"`
 	FullName string `json:"full_name"`
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 }
 
 // Payload contains information about the event like, user, commit id and so on.
