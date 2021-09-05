@@ -11,12 +11,26 @@ type Repository struct {
 	SSHURL   string `json:"ssh_url"`
 	HTMLURL  string `json:"html_url"`
 	FullName string `json:"full_name"`
+	ID       string `json:"id"`
 }
 
 // Payload contains information about the event like, user, commit id and so on.
 // All we care about for the sake of identification is the repository.
 type Payload struct {
-	Repo Repository `json:"repository"`
+	Repo    Repository `json:"repository"`
+	Issue   Issue      `json:"issue"`
+	Comment Comment    `json:"comment"`
+}
+
+// Issue is information about the context of the comment. It should be checked if it's a PR.
+type Issue struct {
+	ID int `json:"id"`
+}
+
+// Comment is information about the comment including the URL which has to be GET
+// in order to retrieve the actual comment.
+type Comment struct {
+	ID int `json:"id"`
 }
 
 // Parser parses the given payload and extracts information out of it.
@@ -38,6 +52,16 @@ func NewParser(payload string) (Parser, error) {
 // RepoName gets the repo name from a payload.
 func (p Parser) RepoName() string {
 	return p.Payload.Repo.FullName
+}
+
+// CommentID returns the ID of the comment.
+func (p Parser) CommentID() int64 {
+	return int64(p.Payload.Comment.ID)
+}
+
+// IssueID returns the attached issue id.
+func (p Parser) IssueID() int64 {
+	return int64(p.Payload.Issue.ID)
 }
 
 // GitURL gets the git url from a payload.
