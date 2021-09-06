@@ -28,10 +28,16 @@ type Issue struct {
 	Number int `json:"number"`
 }
 
+// User is the user who left the comment.
+type User struct {
+	Login string `json:"login"`
+}
+
 // Comment is information about the comment including the URL which has to be GET
 // in order to retrieve the actual comment.
 type Comment struct {
-	ID int `json:"id"`
+	ID   int  `json:"id"`
+	User User `json:"user"`
 }
 
 // Parser parses the given payload and extracts information out of it.
@@ -68,6 +74,11 @@ func (p Parser) IssueID() int64 {
 // IssueNumber returns the attached issue number.
 func (p Parser) IssueNumber() int64 {
 	return int64(p.Payload.Issue.Number)
+}
+
+// CommenterLogin returns the login of the user who left the comment.
+func (p Parser) CommenterLogin() string {
+	return p.Payload.Comment.User.Login
 }
 
 // GitURL gets the git url from a payload.
