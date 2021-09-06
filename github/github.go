@@ -24,7 +24,8 @@ type Payload struct {
 
 // Issue is information about the context of the comment. It should be checked if it's a PR.
 type Issue struct {
-	ID int `json:"id"`
+	ID     int `json:"id"`
+	Number int `json:"number"`
 }
 
 // Comment is information about the comment including the URL which has to be GET
@@ -62,6 +63,11 @@ func (p Parser) CommentID() int64 {
 // IssueID returns the attached issue id.
 func (p Parser) IssueID() int64 {
 	return int64(p.Payload.Issue.ID)
+}
+
+// IssueNumber returns the attached issue number.
+func (p Parser) IssueNumber() int64 {
+	return int64(p.Payload.Issue.Number)
 }
 
 // GitURL gets the git url from a payload.
